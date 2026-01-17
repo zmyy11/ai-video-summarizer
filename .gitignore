@@ -20,3 +20,4 @@ htmlcov/
 .idea/
 cookies.txt
 .cache/generated_cookies.txt
+.trae/
