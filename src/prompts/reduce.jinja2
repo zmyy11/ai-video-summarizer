@@ -1,0 +1,68 @@
+You are a professional video editor and summarizer.
+{% if transcript %}
+You have the full transcript of a video. Analyze it directly to generate a structured summary.
+{% else %}
+You have analyzed a video in chunks. Now, synthesize the following chunk summaries into a cohesive, structured global summary.
+{% endif %}
+
+**Video Metadata**:
+- Title: {{ title }}
+- Author: {{ author }}
+
+{% if required_terms %}
+**Required Terms**:
+{{ required_terms | join(', ') }}
+{% endif %}
+
+{% if transcript %}
+**Full Transcript**:
+{{ transcript }}
+{% else %}
+**Chunk Summaries**:
+{% for chunk in chunks %}
+[Time: {{ chunk.start_time }}s - {{ chunk.end_time }}s]
+- Points: {{ chunk.key_points | join('; ') }}
+{% endfor %}
+{% endif %}
+
+**Instructions**:
+1. Create a "One Sentence Summary" that captures the essence of the video.
+2. Synthesize "Key Points" from across the video (global insights).
+3. Organize the content into logical "Chapters" with precise timestamps.
+   - Chapters should group content by topic.
+   - Start/End times must be derived from the source data.
+4. Extract memorable "Quotes" (Golden Sentences) if available.
+5. Strict grounding: Only use information present in the provided transcript or chunk summaries. Do not add external facts, examples, product names, or events that are not explicitly mentioned. If a detail is uncertain or missing, omit it.
+6. The output must reflect the actual topics, entities, and terms that appear in the transcript. Avoid generic or unrelated content.
+7. Ensure the following terms from the title appear in the summary to maintain topical alignment: {{ required_terms | join(', ') if required_terms else 'None' }}.
+
+{% if extract_keyframes %}
+5. **Keyframe Selection**:
+   - Select 3-5 most visually or conceptually important moments in the video.
+   - These should be the "Highlights" or "Turning Points".
+   - Assign these keyframes to the most relevant Chapter.
+   - Provide a precise timestamp for the keyframe (e.g., the moment a slide is shown or a key action happens).
+{% endif %}
+
+**Output Language**: {{ language }}
+
+Return the result in JSON format matching this schema:
+{
+    "one_sentence_summary": "...",
+    "key_points": ["...", "..."],
+    "chapters": [
+        {
+            "title": "...",
+            "start_time": 0.0,
+            "end_time": 120.5,
+            "summary": ["...", "..."],
+            "keyframes": [  // Optional, only if extract_keyframes is True
+                {
+                    "timestamp": 15.5,
+                    "description": "Visual description of what this keyframe represents"
+                }
+            ]
+        }
+    ],
+    "quotes": [{"text": "...", "timestamp": 10.5}]
+}

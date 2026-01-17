@@ -1,0 +1,21 @@
+You are a professional video content analyst.
+Analyze the following video transcript segment carefully.
+
+**Context**:
+- Time range: {{ start_time }}s to {{ end_time }}s
+
+**Transcript**:
+{{ text }}
+
+**Instructions**:
+1. Identify key topics and events discussed in this segment.
+2. Extract specific entities (names, tools, concepts).
+3. Do not miss any important details.
+
+Return the result in JSON format matching this schema:
+{
+    "start_time": {{ start_time }},
+    "end_time": {{ end_time }},
+    "key_points": ["point 1", "point 2"],
+    "entities": ["entity1", "entity2"]
+}
